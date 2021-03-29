@@ -1,10 +1,10 @@
 from flask import Flask, send_file
 from flask_restful import Api, Resource, reqparse
-import requests
 import werkzeug
 import os
 import io
-from PIL import Image
+
+import imageprocessor as improc
 
 app = Flask(__name__)
 api = Api(app)
@@ -20,7 +20,8 @@ class LoadImage(Resource):
         args = parse.parse_args()
         image_file = args['image']
         image_file.save("newImage.jpg")
-        return send_file(image_file, mimetype='image/jpg')
+        improc.to_grayscale("newImage.jpg")
+        return {'id': "newImage"}
 
     def get(self):
         file_path = os.path.join(app.root_path, "newImage.jpg")
