@@ -1,8 +1,11 @@
-from flask import Flask, send_file
+from flask import Flask, send_file, make_response, render_template, request, jsonify
 from flask_restful import Api, Resource, reqparse
+from PIL import Image
 import werkzeug
-import os
-import io
+import os, io, sys
+import numpy as np
+from cv2 import cv2
+import base64
 
 import imageprocessor as improc
 
@@ -29,6 +32,25 @@ class LoadImage(Resource):
         return_data.seek(0)
         os.remove(file_path)
         return send_file(return_data, mimetype='image/jpg', attachment_filename='image.jpg')
+
+class HomePage(Resource):
+    def get(self):
+        return make_response(render_template('index.html'))
+
+class NewLoadImage(Resource):
+    def post(self):
+        file = request.files['image'].read()
+        npimg = np.fromstring(file, np.uint8)
+        img = cv2.imdecode(npimg, flags=1)
+
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        
+        img = Image.fromarray(img.astype("uint8"))
+        rawBytes = io.BytesIO()
+        img.save(rawBytes, "JPEG")
+        rawBytes.seek(0)
+        img_base64 = base64.b64encode(rawBytes.read())
+        return jsonify({'status':str(img_base64)})
 
 class Grayscale(Resource):
     def post(self):
@@ -126,6 +148,17 @@ class FrontalFace(Resource):
         improc.write_image(image, "newImage.jpg")
         return {'id': "newImage", 'error': err}
 
+
+@app.after_request
+def after_request(response):
+    print("log: setting cors" , file = sys.stderr)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
+
+api.add_resource(HomePage, "/")
+api.add_resource(NewLoadImage, '/new-image')
 api.add_resource(HelloWorld, "/hello")
 api.add_resource(LoadImage, "/image")
 api.add_resource(Grayscale, "/gray")
