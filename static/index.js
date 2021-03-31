@@ -1,14 +1,16 @@
-
-window.onload = () => {
-	$('#sendbutton').click(() => {
-		imagebox = $('#imagebox')
+function onClickMethod(endpoint, inputs){
+	imagebox = $('#imagebox')
 		input = $('#imageinput')[0]
 		if(input.files && input.files[0])
 		{
 			let formData = new FormData();
 			formData.append('image' , input.files[0]);
+			for (let inpt of inputs){
+				param = document.getElementById(inpt).value
+				endpoint += '/' + param
+			}
 			$.ajax({
-				url: "/new-image",
+				url: endpoint,
 				type:"POST",
 				data: formData,
 				cache: false,
@@ -25,14 +27,12 @@ window.onload = () => {
 				}
 			});
 		}
-	});
-};
+}
 
 
 
 function readUrl(input){
 	imagebox = $('#imagebox')
-	console.log("evoked readUrl")
 	if(input.files && input.files[0]){
 		let reader = new FileReader();
 		reader.onload = function(e){

@@ -13,7 +13,14 @@
 <div class="box">
 
 	<input id="imageinput" type="file" name="image" onchange="readUrl(this)">
-	<button name="send" id = "sendbutton">Send</button>
+	<div style="float: right;">
+		<button class="btn" onclick="onClickMethod('/gray', [])">Grayscale</button><br>
+		<input id="grayscale-blur" type="number">
+		<button class="btn" onclick="onClickMethod('/median', ['grayscale-blur'])">Median Blur</button><br>
+		<input id="avg-blur-x" type="number"><input id="avg-blur-y" type="number">
+		<button class="btn" onclick="onClickMethod('/average', ['avg-blur-x', 'avg-blur-y'])">Average blur</button><br>
+	</div>
+
 	<hr>
 	<img id="imagebox" src="">
 	
