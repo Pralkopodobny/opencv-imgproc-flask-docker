@@ -122,7 +122,7 @@ class ImageProcessor:
 
     def naive_rotate(self, image, angle : int):
         angle = angle % 360
-        (w, h) = image.shape[:2]
+        (h, w) = image.shape[:2]
         center = (h // 2, w // 2)
         rotated = cv2.warpAffine(image, cv2.getRotationMatrix2D(center, angle, 1.0), (w, h))
         return rotated, None

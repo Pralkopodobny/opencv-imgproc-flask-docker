@@ -1,8 +1,11 @@
 function onClickMethod(endpoint, variables){
 	const data = new FormData();
 
-	for (let varbl in variables){
-		if(varbl){
+	console.log(variables)
+
+	for (let varbl of variables){
+		if(varbl != ""){
+			console.log(varbl)
 			v = document.getElementById(varbl).value
 			if(v != 'undefined' && v != null && v != "")
 				data.append(varbl, v)
@@ -30,9 +33,13 @@ function onClickMethod(endpoint, variables){
 						alert(data['err'])
 						return
 					}
+
 					bytestring = data['status']
 					image = bytestring.split('\'')[1]
 					resultImageBox.attr('src' , 'data:image/jpeg;base64,'+image)
+
+					if(data['extra'])
+						document.getElementById('extraResult').innerHTML = data['extra'];
 				}
 			});
 		}
