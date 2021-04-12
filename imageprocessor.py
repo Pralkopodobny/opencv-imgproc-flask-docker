@@ -119,3 +119,21 @@ class ImageProcessor:
         for (x, y, w, h) in detected_faces:
             cv2.rectangle(image, (x, y), (x + w, y + h), color=(0, 255, 0), thickness=2)
         return image, None
+
+    def naive_rotate(self, image, angle : int):
+        angle = angle % 360
+        (w, h) = image.shape[:2]
+        center = (h // 2, w // 2)
+        rotated = cv2.warpAffine(image, cv2.getRotationMatrix2D(center, angle, 1.0), (w, h))
+        return rotated, None
+
+    def rotate(self, image, angle : int):
+        angle = angle % 360
+        (h, w) = image.shape[:2]
+        center = (w / 2, h / 2)
+        M = cv2.getRotationMatrix2D(center, -angle, 1.0)
+        (cos, sin) = np.abs(M[0, 0]), np.abs(M[0, 1])
+        new_shape = int((h * sin) + (w * cos)), int((h * cos) + (w * sin))
+        M[0, 2] += (new_shape[0] / 2) - center[0]
+        M[1, 2] += (new_shape[1] / 2) - center[1]
+        return cv2.warpAffine(image, M, (new_shape[0], new_shape[1])), None
