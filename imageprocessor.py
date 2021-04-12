@@ -118,7 +118,7 @@ class ImageProcessor:
         detected_faces = self.haar_cascade.detectMultiScale(gray, minNeighbors=min_neighbours, scaleFactor=scale)
         for (x, y, w, h) in detected_faces:
             cv2.rectangle(image, (x, y), (x + w, y + h), color=(0, 255, 0), thickness=2)
-        return image, None
+        return image, None, detected_faces
 
     def naive_rotate(self, image, angle : int):
         angle = angle % 360
