@@ -11,6 +11,7 @@ import imageprocessor as improc
 
 app = Flask(__name__)
 api = Api(app)
+imageprocessor = improc.ImageProcessor()
 
 def get_image(filename):
     parse = reqparse.RequestParser()
@@ -58,7 +59,7 @@ class Grayscale(Resource):
             var1="none",
             var2="none"))
     def post(self):   
-        return image_process(request.files['image'].read(), improc.to_grayscale)
+        return image_process(request.files['image'].read(), imageprocessor.to_grayscale)
 
 class Median(Resource):
     def get(self):
@@ -75,78 +76,78 @@ class Median(Resource):
 
 class Average(Resource):
     def post(self, ksize_x, ksize_y):
-        result = image_process(request.files['image'].read(), improc.average_blur, [ksize_x, ksize_y])
+        result = image_process(request.files['image'].read(), imageprocessor.average_blur, [ksize_x, ksize_y])
 
 class GaussianBlur(Resource):
     def post(self, ksize_x, ksize_y):
         get_image("newImage.jpg")
-        image, err = improc.read_image("newImage.jpg")
-        image, err = improc.gaussian_blur(image, ksize_x, ksize_y)
-        improc.write_image(image, "newImage.jpg")
+        image, err = imageprocessor.read_image("newImage.jpg")
+        image, err = imageprocessor.gaussian_blur(image, ksize_x, ksize_y)
+        imageprocessor.write_image(image, "newImage.jpg")
         return {'id': "newImage", 'error': err}
 
 class Bilateral(Resource):
     def post(self, d, sigma):
         get_image("newImage.jpg")
-        image, err = improc.read_image("newImage.jpg")
-        image, err = improc.bilateral_filter(image, d, sigma)
-        improc.write_image(image, "newImage.jpg")
+        image, err = imageprocessor.read_image("newImage.jpg")
+        image, err = imageprocessor.bilateral_filter(image, d, sigma)
+        imageprocessor.write_image(image, "newImage.jpg")
         return {'id': "newImage", 'error': err}
 
 class GlobalThresh(Resource):
     def post(self, threshold, value):
         get_image("newImage.jpg")
-        image, err = improc.read_image("newImage.jpg")
-        image, err = improc.global_threshold(image, threshold, value)
-        improc.write_image(image, "newImage.jpg")
+        image, err = imageprocessor.read_image("newImage.jpg")
+        image, err = imageprocessor.global_threshold(image, threshold, value)
+        imageprocessor.write_image(image, "newImage.jpg")
         return {'id': "newImage", 'error': err}
 
 class MeanThreshold(Resource):
     def post(self, blocksize, c, value):
         get_image("newImage.jpg")
-        image, err = improc.read_image("newImage.jpg")
-        image, err = improc.mean_threshold(image, blocksize, c, value)
-        improc.write_image(image, "newImage.jpg")
+        image, err = imageprocessor.read_image("newImage.jpg")
+        image, err = imageprocessor.mean_threshold(image, blocksize, c, value)
+        imageprocessor.write_image(image, "newImage.jpg")
         return {'id': "newImage", 'error': err}
 
 class GaussianThreshold(Resource):
     def post(self, blocksize, c, value):
         get_image("newImage.jpg")
-        image, err = improc.read_image("newImage.jpg")
-        image, err = improc.gaussian_threshold(image, blocksize, c, value)
-        improc.write_image(image, "newImage.jpg")
+        image, err = imageprocessor.read_image("newImage.jpg")
+        image, err = imageprocessor.gaussian_threshold(image, blocksize, c, value)
+        imageprocessor.write_image(image, "newImage.jpg")
         return {'id': "newImage", 'error': err}
 
 class Sobel(Resource):
     def post(self, dx, dy, ksize, delta):
         get_image("newImage.jpg")
-        image, err = improc.read_image("newImage.jpg")
-        image, err = improc.sobel(image, dx, dy, ksize, delta)
-        improc.write_image(image, "newImage.jpg")
+        image, err = imageprocessor.read_image("newImage.jpg")
+        image, err = imageprocessor.sobel(image, dx, dy, ksize, delta)
+        imageprocessor.write_image(image, "newImage.jpg")
         return {'id': "newImage", 'error': err}
 
 class Laplacian(Resource):
     def post(self, ksize, delta):
         get_image("newImage.jpg")
-        image, err = improc.read_image("newImage.jpg")
-        image, err = improc.laplacian(image, ksize, delta)
-        improc.write_image(image, "newImage.jpg")
+        image, err = imageprocessor.read_image("newImage.jpg")
+        image, err = imageprocessor.laplacian(image, ksize, delta)
+        imageprocessor.write_image(image, "newImage.jpg")
         return {'id': "newImage", 'error': err}
 
 class Canny(Resource):
     def post(self, threshold1, threshold2):
         get_image("newImage.jpg")
-        image, err = improc.read_image("newImage.jpg")
-        image, err = improc.canny_edge_detection(image, threshold1, threshold2)
-        improc.write_image(image, "newImage.jpg")
+        image, err = imageprocessor.read_image("newImage.jpg")
+        image, err = imageprocessor.canny_edge_detection(image, threshold1, threshold2)
+        imageprocessor.write_image(image, "newImage.jpg")
         return {'id': "newImage", 'error': err}
 
 class FrontalFace(Resource):
     def post(self, min_neighbours, scale):
         get_image("newImage.jpg")
-        image, err = improc.read_image("newImage.jpg")
-        image, err = improc.haar_frontal_face_detection(image, min_neighbours, scale)
-        improc.write_image(image, "newImage.jpg")
+        image, err = imageprocessor.read_image("newImage.jpg")
+        image, err = imageprocessor.haar_frontal_face_detection(image, min_neighbours, scale)
+        imageprocessor.write_image(image, "newImage.jpg")
         return {'id': "newImage", 'error': err}
 
 
