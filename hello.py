@@ -25,16 +25,19 @@ def image_process(file, method, params = None):
     img = cv2.imdecode(npimg, flags=1)
 
     if params:
-        img = method(img, *params)[0]
+        res = method(img, *params)
     else:
-        img = method(img)[0]
+        res = method(img)
+    
+    if(res[1]):
+        return {'success' : False, 'err' : res[1]}
         
-    img = Image.fromarray(img.astype("uint8"))
+    img = Image.fromarray(res[0].astype("uint8"))
     rawBytes = io.BytesIO()
     img.save(rawBytes, "JPEG")
     rawBytes.seek(0)
     img_base64 = base64.b64encode(rawBytes.read())
-    return jsonify({'status':str(img_base64)})
+    return jsonify({'success' : True, 'status':str(img_base64)})
 
 class LoadImage(Resource):
     def get(self):
@@ -57,7 +60,9 @@ class Grayscale(Resource):
             methodName="Grayscale", 
             endpoint = "/gray", 
             var1="none",
-            var2="none"))
+            var2="none",
+            var3="none",
+            var4="none"))
     def post(self):   
         return image_process(request.files['image'].read(), imageprocessor.to_grayscale)
 
@@ -67,88 +72,142 @@ class Median(Resource):
             'methodPage.html', 
             methodName="Median", 
             endpoint = "/median", 
-            var1="block",
-            var1Name="ksize", 
-            var2="none"))
+            var1="block", var1Name="ksize", 
+            var2="none",
+            var3="none",
+            var4="none"))
     def post(self):
-        print(request.files)
         return image_process(request.files['image'].read(), improc.median_blur, [int(request.form['ksize'])])
 
 class Average(Resource):
-    def post(self, ksize_x, ksize_y):
-        result = image_process(request.files['image'].read(), imageprocessor.average_blur, [ksize_x, ksize_y])
+    def get(self):
+        return make_response(render_template(
+            'methodPage.html', 
+            methodName="Average", 
+            endpoint = "/average", 
+            var1="block", var1Name="ksize_x", 
+            var2="block", var2Name="ksize_y",
+            var3="none",
+            var4="none"))
+    def post(self):
+        return image_process(request.files['image'].read(), improc.average_blur, [int(request.form['ksize_x']), int(request.form['ksize_y'])])
 
 class GaussianBlur(Resource):
-    def post(self, ksize_x, ksize_y):
-        get_image("newImage.jpg")
-        image, err = imageprocessor.read_image("newImage.jpg")
-        image, err = imageprocessor.gaussian_blur(image, ksize_x, ksize_y)
-        imageprocessor.write_image(image, "newImage.jpg")
-        return {'id': "newImage", 'error': err}
+    def get(self):
+        return make_response(render_template(
+            'methodPage.html', 
+            methodName="Gaussian Blur", 
+            endpoint = "/gauss", 
+            var1="block", var1Name="ksize_x", 
+            var2="block", var2Name="ksize_y",
+            var3="none",
+            var4="none"))
+    def post(self):
+        return image_process(request.files['image'].read(), improc.gaussian_blur, [int(request.form['ksize_x']), int(request.form['ksize_y'])])
 
 class Bilateral(Resource):
-    def post(self, d, sigma):
-        get_image("newImage.jpg")
-        image, err = imageprocessor.read_image("newImage.jpg")
-        image, err = imageprocessor.bilateral_filter(image, d, sigma)
-        imageprocessor.write_image(image, "newImage.jpg")
-        return {'id': "newImage", 'error': err}
+    def get(self):
+        return make_response(render_template(
+            'methodPage.html', 
+            methodName="Bilateral filter", 
+            endpoint = "/bilateral", 
+            var1="block",  var1Name="d", 
+            var2="block", var2Name="sigma",
+            var3="none",
+            var4="none"))
+    def post(self):
+        return image_process(request.files['image'].read(), improc.bilateral_filter, [int(request.form['d']), float(request.form['sigma'])])
 
 class GlobalThresh(Resource):
-    def post(self, threshold, value):
-        get_image("newImage.jpg")
-        image, err = imageprocessor.read_image("newImage.jpg")
-        image, err = imageprocessor.global_threshold(image, threshold, value)
-        imageprocessor.write_image(image, "newImage.jpg")
-        return {'id': "newImage", 'error': err}
+    def get(self):
+        return make_response(render_template(
+            'methodPage.html', 
+            methodName="Global threshold", 
+            endpoint = "/thresh/global", 
+            var1="block", var1Name="threshold", 
+            var2="block", var2Name="value",
+            var3="none",
+            var4="none"))
+    def post(self):
+        return image_process(request.files['image'].read(), improc.global_threshold, [int(request.form['threshold']), int(request.form['value'])])
 
 class MeanThreshold(Resource):
-    def post(self, blocksize, c, value):
-        get_image("newImage.jpg")
-        image, err = imageprocessor.read_image("newImage.jpg")
-        image, err = imageprocessor.mean_threshold(image, blocksize, c, value)
-        imageprocessor.write_image(image, "newImage.jpg")
-        return {'id': "newImage", 'error': err}
+    def get(self):
+        return make_response(render_template(
+            'methodPage.html', 
+            methodName="Mean threshold", 
+            endpoint = "/thresh/mean", 
+            var1="block", var1Name="blocksize", 
+            var2="block", var2Name="c",
+            var3="block", var3Name="value",
+            var4="none"))
+    def post(self):
+        return image_process(request.files['image'].read(), improc.mean_threshold, [int(request.form['blocksize']), float(request.form['c']), int(request.form['value'])])
 
 class GaussianThreshold(Resource):
-    def post(self, blocksize, c, value):
-        get_image("newImage.jpg")
-        image, err = imageprocessor.read_image("newImage.jpg")
-        image, err = imageprocessor.gaussian_threshold(image, blocksize, c, value)
-        imageprocessor.write_image(image, "newImage.jpg")
-        return {'id': "newImage", 'error': err}
+    def get(self):
+        return make_response(render_template(
+            'methodPage.html', 
+            methodName="Gaussian threshold", 
+            endpoint = "/thresh/gauss", 
+            var1="block", var1Name="blocksize", 
+            var2="block", var2Name="c",
+            var3="block", var3Name="value",
+            var4="none"))
+    def post(self):
+        return image_process(request.files['image'].read(), improc.gaussian_threshold, [int(request.form['blocksize']), float(request.form['c']), int(request.form['value'])])
 
 class Sobel(Resource):
-    def post(self, dx, dy, ksize, delta):
-        get_image("newImage.jpg")
-        image, err = imageprocessor.read_image("newImage.jpg")
-        image, err = imageprocessor.sobel(image, dx, dy, ksize, delta)
-        imageprocessor.write_image(image, "newImage.jpg")
-        return {'id': "newImage", 'error': err}
+    def get(self):
+        return make_response(render_template(
+            'methodPage.html', 
+            methodName="Sobel", 
+            endpoint = "/sobel", 
+            var1="block", var1Name="dx", 
+            var2="block", var2Name="dy",
+            var3="block", var3Name="ksize",
+            var4="block", var4Name="delta"))
+    def post(self):
+        return image_process(request.files['image'].read(), improc.sobel, [int(request.form['dx']), float(request.form['dy']), int(request.form['ksize']), float(request.form['delta'])])
 
 class Laplacian(Resource):
-    def post(self, ksize, delta):
-        get_image("newImage.jpg")
-        image, err = imageprocessor.read_image("newImage.jpg")
-        image, err = imageprocessor.laplacian(image, ksize, delta)
-        imageprocessor.write_image(image, "newImage.jpg")
-        return {'id': "newImage", 'error': err}
+    def get(self):
+        return make_response(render_template(
+            'methodPage.html', 
+            methodName="Global threshold", 
+            endpoint = "/laplacian", 
+            var1="block", var1Name="ksize", 
+            var2="block", var2Name="delta",
+            var3="none",
+            var4="none"))
+    def post(self):
+        return image_process(request.files['image'].read(), improc.laplacian, [int(request.form['ksize']), float(request.form['delta'])])
 
 class Canny(Resource):
-    def post(self, threshold1, threshold2):
-        get_image("newImage.jpg")
-        image, err = imageprocessor.read_image("newImage.jpg")
-        image, err = imageprocessor.canny_edge_detection(image, threshold1, threshold2)
-        imageprocessor.write_image(image, "newImage.jpg")
-        return {'id': "newImage", 'error': err}
+    def get(self):
+        return make_response(render_template(
+            'methodPage.html', 
+            methodName="Canny", 
+            endpoint = "/canny", 
+            var1="block", var1Name="threshold1", 
+            var2="block", var2Name="threshold2",
+            var3="none",
+            var4="none"))
+    def post(self):
+        return image_process(request.files['image'].read(), improc.laplacian, [int(request.form['threshold1']), int(request.form['threshold2'])])
 
 class FrontalFace(Resource):
-    def post(self, min_neighbours, scale):
-        get_image("newImage.jpg")
-        image, err = imageprocessor.read_image("newImage.jpg")
-        image, err = imageprocessor.haar_frontal_face_detection(image, min_neighbours, scale)
-        imageprocessor.write_image(image, "newImage.jpg")
-        return {'id': "newImage", 'error': err}
+    def get(self):
+        return make_response(render_template(
+            'methodPage.html', 
+            methodName="Canny", 
+            endpoint = "/frontal", 
+            var1="block", var1Name="min_neighbours", 
+            var2="block", var2Name="scale",
+            var3="none",
+            var4="none"))
+    def post(self):
+        return image_process(request.files['image'].read(), improc.laplacian, [int(request.form['min_neighbours']), float(request.form['scale'])])
 
 
 @app.after_request
@@ -162,16 +221,16 @@ api.add_resource(HomePage, "/")
 api.add_resource(LoadImage, "/image")
 api.add_resource(Grayscale, "/gray")
 api.add_resource(Median, "/median")
-api.add_resource(Average, "/average/<int:ksize_x>/<int:ksize_y>")
-api.add_resource(GaussianBlur, "/gauss/<int:ksize_x>/<int:ksize_y>")
-api.add_resource(Bilateral, "/bilateral/<int:d>/<float:sigma>")
-api.add_resource(GlobalThresh, "/thresh/global/<int:threshold>/<int:value>")
-api.add_resource(MeanThreshold, "/thresh/mean/<int:blocksize>/<float:c>/<int:value>")
-api.add_resource(GaussianThreshold, "/thresh/gauss/<int:blocksize>/<float:c>/<int:value>")
-api.add_resource(Sobel, "/sobel/<int:dx>/<int:dy>/<int:ksize>/<float:delta>")
-api.add_resource(Laplacian,"/laplacian/<int:ksize>/<float:delta>")
-api.add_resource(Canny, "/canny/<int:threshold1>/<int:threshold2>")
-api.add_resource(FrontalFace, "/frontal/<int:min_neighbours>/<float:scale>")
+api.add_resource(Average, "/average")
+api.add_resource(GaussianBlur, "/gauss")
+api.add_resource(Bilateral, "/bilateral")
+api.add_resource(GlobalThresh, "/thresh/global")
+api.add_resource(MeanThreshold, "/thresh/mean")
+api.add_resource(GaussianThreshold, "/thresh/gauss")
+api.add_resource(Sobel, "/sobel")
+api.add_resource(Laplacian,"/laplacian")
+api.add_resource(Canny, "/canny")
+api.add_resource(FrontalFace, "/frontal")
 
 if __name__ == "__main__":
     app.run(debug=True)

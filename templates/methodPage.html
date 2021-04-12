@@ -20,18 +20,6 @@
 
 	<div class = "optionsHolder">
 		<h1>{{ methodName }}</h1>
-<!-- 
-		<div class="input-group">
-			<div class="input-group-prepend">
-			  <span class="input-group-text" id="inputGroupFileAddon01">Choose Image</span>
-			</div>
-			<div class="custom-file">
-			  <input type="file" class="custom-file-input" id="imageinput"
-				aria-describedby="inputGroupFileAddon01"
-				name="image" onchange="readUrl(this)">
-			  <label class="custom-file-label" for="imageinput"></label>
-			</div>
-		  </div> -->
 
 		<p>
 			<input type="file" id="imageinput" name="image" onchange="readUrl(this)">
@@ -45,6 +33,14 @@
 			<label for="{{var2Name}}">{{var2Name}}</label>
 			<input type="number" id="{{var2Name}}" placeholder="">
 		</p>
+		<p style="display: {{ var3 }} ">
+			<label for="{{var3Name}}">{{var3Name}}</label>
+			<input type="number" id="{{var3Name}}" placeholder="">
+		</p>
+		<p style="display: {{ var4 }} ">
+			<label for="{{var4Name}}">{{var4Name}}</label>
+			<input type="number" id="{{var4Name}}" placeholder="">
+		</p>
 
 	</div>
 
@@ -53,7 +49,7 @@
 		<div class = "imageBoxesHolder">
 			<img class = "image" id="imagebox" src="../static/no-image.png">
 			<div class = "convertButtonHolder">
-				<button type="button" class="btn btn-light btn-lg"onclick="onClickMethod('{{endpoint}}', '{{var1Name}}', '{{var2Name}}')">➜</button>
+				<button type="button" class="btn btn-light btn-lg"onclick="onClickMethod('{{endpoint}}', ['{{var1Name}}', '{{var2Name}}', '{{var3Name}}', '{{var4Name}}'] )">➜</button>
 			</div>
 			<img class = "image" id="resimagebox" src="../static/no-image.png">
 			<div class="floatClear"></div>

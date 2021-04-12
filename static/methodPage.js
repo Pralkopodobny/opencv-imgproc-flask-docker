@@ -1,17 +1,13 @@
-function onClickMethod(endpoint, var1, var2){
+function onClickMethod(endpoint, variables){
 	const data = new FormData();
-	var1Val = null
-	var2Val = null
-	if(var1)
-		var1Val = document.getElementById(var1).value
-	if(var2)
-		var2Val = document.getElementById(var2).value
 
-	if(var1 != 'undefined' && var1Val != null && var1Val != "")
-		data.append(var1, var1Val)
-	
-	if(var2 != 'undefined' && var2Val != null && var2Val != "")
-		data.append(var2, var2Val)
+	for (let varbl in variables){
+		if(varbl){
+			v = document.getElementById(varbl).value
+			if(v != 'undefined' && v != null && v != "")
+				data.append(varbl, v)
+		}
+	}
 
 	resultImageBox = $('#resimagebox')
 		input = $('#imageinput')[0]
@@ -30,6 +26,10 @@ function onClickMethod(endpoint, var1, var2){
 					console.log(data.getAllResponseHeaders());
 				},
 				success: function(data){
+					if(!data['success']){
+						alert(data['err'])
+						return
+					}
 					bytestring = data['status']
 					image = bytestring.split('\'')[1]
 					resultImageBox.attr('src' , 'data:image/jpeg;base64,'+image)
