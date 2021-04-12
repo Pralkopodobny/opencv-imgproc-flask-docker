@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{ methodName }}</title>
+	<link rel="stylesheet" type="text/css" href="../static/methodPage.css">
+	<script
+			  src="https://code.jquery.com/jquery-3.3.1.min.js"
+			  crossorigin="anonymous"></script>
+	<script type="text/javascript" src="../static/methodPage.js"></script>
+
+    <link rel="stylesheet" href= 
+"https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"> 
+               
+    <script src= 
+"https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"> 
+    </script> 
+
+</head>
+<body>
+
+	<div class = "optionsHolder">
+		<h1>{{ methodName }}</h1>
+<!-- 
+		<div class="input-group">
+			<div class="input-group-prepend">
+			  <span class="input-group-text" id="inputGroupFileAddon01">Choose Image</span>
+			</div>
+			<div class="custom-file">
+			  <input type="file" class="custom-file-input" id="imageinput"
+				aria-describedby="inputGroupFileAddon01"
+				name="image" onchange="readUrl(this)">
+			  <label class="custom-file-label" for="imageinput"></label>
+			</div>
+		  </div> -->
+
+		<p>
+			<input type="file" id="imageinput" name="image" onchange="readUrl(this)">
+		</p>
+
+		<p style="display: {{ var1 }} ">
+			<label for="{{var1Name}}">{{var1Name}}</label>
+			<input type="number" id="{{var1Name}}" placeholder="">
+		</p>
+		<p style="display: {{ var2 }} ">
+			<label for="{{var2Name}}">{{var2Name}}</label>
+			<input type="number" id="{{var2Name}}" placeholder="">
+		</p>
+
+	</div>
+
+	<div class="box">
+
+		<div class = "imageBoxesHolder">
+			<img class = "image" id="imagebox" src="../static/no-image.png">
+			<div class = "convertButtonHolder">
+				<button type="button" class="btn btn-light btn-lg"onclick="onClickMethod('{{endpoint}}', '{{var1Name}}', '{{var2Name}}')">➜</button>
+			</div>
+			<img class = "image" id="resimagebox" src="../static/no-image.png">
+			<div class="floatClear"></div>
+		</div>	
+
+	</div>
+
+	<footer>
+		Rafał Behrendt, Marceli Sokólski @ 2021 | <a href="/">Powrót do strony głównej</a>
+	</footer>
+
+</body>
+</html>

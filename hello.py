@@ -50,22 +50,32 @@ class HomePage(Resource):
         return make_response(render_template('index.html'))
 
 class Grayscale(Resource):
-    def post(self):
-        file = request.files['image'].read()
-        result = image_process(file, improc.to_grayscale)
-        return result
+    def get(self):
+        return make_response(render_template(
+            'methodPage.html', 
+            methodName="Grayscale", 
+            endpoint = "/gray", 
+            var1="none",
+            var2="none"))
+    def post(self):   
+        return image_process(request.files['image'].read(), improc.to_grayscale)
 
 class Median(Resource):
-    def post(self, ksize):
-        file = request.files['image'].read()
-        result = image_process(file, improc.median_blur, [ksize])
-        return result
+    def get(self):
+        return make_response(render_template(
+            'methodPage.html', 
+            methodName="Median", 
+            endpoint = "/median", 
+            var1="block",
+            var1Name="ksize", 
+            var2="none"))
+    def post(self):
+        print(request.files)  
+        return image_process(request.files['image'].read(), improc.median_blur, [request.files['ksize']])
 
 class Average(Resource):
     def post(self, ksize_x, ksize_y):
-        file = request.files['image'].read()
-        result = image_process(file, improc.average_blur, [ksize_x, ksize_y])
-        return result
+        result = image_process(request.files['image'].read(), improc.average_blur, [ksize_x, ksize_y])
 
 class GaussianBlur(Resource):
     def post(self, ksize_x, ksize_y):
@@ -150,7 +160,7 @@ def after_request(response):
 api.add_resource(HomePage, "/")
 api.add_resource(LoadImage, "/image")
 api.add_resource(Grayscale, "/gray")
-api.add_resource(Median, "/median/<int:ksize>")
+api.add_resource(Median, "/median")
 api.add_resource(Average, "/average/<int:ksize_x>/<int:ksize_y>")
 api.add_resource(GaussianBlur, "/gauss/<int:ksize_x>/<int:ksize_y>")
 api.add_resource(Bilateral, "/bilateral/<int:d>/<float:sigma>")
