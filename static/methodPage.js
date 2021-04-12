@@ -1,5 +1,5 @@
 function onClickMethod(endpoint, var1, var2){
-	const formData = new FormData();
+	const data = new FormData();
 	var1Val = null
 	var2Val = null
 	if(var1)
@@ -8,21 +8,20 @@ function onClickMethod(endpoint, var1, var2){
 		var2Val = document.getElementById(var2).value
 
 	if(var1 != 'undefined' && var1Val != null && var1Val != "")
-		formData.append(var1, var1Val)
+		data.append(var1, var1Val)
 	
 	if(var2 != 'undefined' && var2Val != null && var2Val != "")
-		formData.append(var2, var2Val)
+		data.append(var2, var2Val)
 
 	resultImageBox = $('#resimagebox')
 		input = $('#imageinput')[0]
 		if(input.files && input.files[0])
 		{
-			formData.append('image' , input.files[0]);
-			console.log(formData.get(var1))
+			data.append('image' , input.files[0]);
 			$.ajax({
 				url: endpoint,
 				type:"POST",
-				data: formData,
+				data: data,
 				cache: false,
 				processData:false,
 				contentType:false,
