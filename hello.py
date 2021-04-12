@@ -70,8 +70,8 @@ class Median(Resource):
             var1Name="ksize", 
             var2="none"))
     def post(self):
-        print(request.files)  
-        return image_process(request.files['image'].read(), improc.median_blur, [request.files['ksize']])
+        print(request.files)
+        return image_process(request.files['image'].read(), improc.median_blur, [int(request.form['ksize'])])
 
 class Average(Resource):
     def post(self, ksize_x, ksize_y):
@@ -171,6 +171,7 @@ api.add_resource(Sobel, "/sobel/<int:dx>/<int:dy>/<int:ksize>/<float:delta>")
 api.add_resource(Laplacian,"/laplacian/<int:ksize>/<float:delta>")
 api.add_resource(Canny, "/canny/<int:threshold1>/<int:threshold2>")
 api.add_resource(FrontalFace, "/frontal/<int:min_neighbours>/<float:scale>")
+
 if __name__ == "__main__":
     app.run(debug=True)
     
