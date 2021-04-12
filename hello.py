@@ -13,6 +13,20 @@ app = Flask(__name__)
 api = Api(app)
 imageprocessor = improc.ImageProcessor()
 
+def bgr2rgb_2_params(function):
+    def wrapper(*args):
+        image, error = function(*args)
+        image, _ = imageprocessor.bgr2rgb(image)
+        return image, error
+    return wrapper
+
+def bgr2rgb_3_params(function):
+    def wrapper(*args):
+        image, error, values = function(*args)
+        image, _ = imageprocessor.bgr2rgb(image)
+        return image, error, values
+    return wrapper
+
 def get_image(filename):
     parse = reqparse.RequestParser()
     parse.add_argument('image', type=werkzeug.datastructures.FileStorage, location='files')
@@ -71,8 +85,8 @@ class Median(Resource):
             var1Name="ksize", 
             var2="none"))
     def post(self):
-        print(request.files)  
-        return image_process(request.files['image'].read(), imageprocessor.median_blur, [request.files['ksize']])
+        print(request.files)
+        return image_process(request.files['image'].read(), bgr2rgb_2_params(imageprocessor.median_blur), [int(request.form['ksize'])])
 
 class Average(Resource):
     def post(self, ksize_x, ksize_y):

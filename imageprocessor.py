@@ -16,6 +16,9 @@ class ImageProcessor:
         result = cv2.imread(filename)
         return result, None
 
+    def bgr2rgb(self, image):
+        return cv2.cvtColor(image,cv2.COLOR_BGR2RGB), None
+
     def write_image(self, image, filename: str):
         cv2.imwrite(filename, image)
 
