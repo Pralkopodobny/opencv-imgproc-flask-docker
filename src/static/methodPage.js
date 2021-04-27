@@ -1,7 +1,6 @@
 function onClickMethod(endpoint, variables){
-	const data = new FormData(); // form data for all data user provides
+	const data = new FormData();
 
-	// loop to iterate through all parameters and save them in formData
 	for (let varbl of variables){
 		if(varbl != ""){
 			v = document.getElementById(varbl).value
@@ -14,8 +13,7 @@ function onClickMethod(endpoint, variables){
 		input = $('#imageinput')[0]
 		if(input.files && input.files[0])
 		{
-			data.append('image' , input.files[0]); // saving image to formData
-			// post request to current endpoint
+			data.append('image' , input.files[0]);
 			$.ajax({
 				url: endpoint,
 				type:"POST",
@@ -23,22 +21,17 @@ function onClickMethod(endpoint, variables){
 				cache: false,
 				processData:false,
 				contentType:false,
-				error: function(data){ // upload error handling
-					console.log("upload error" , data);
-					console.log(data.getAllResponseHeaders());
-					alert("Upload error")
-				},
 				success: function(data){
-					if(!data['success']){ // wrong parameters error handling
+					if(!data['success']){
 						alert(data['err'])
 						return
 					}
 
 					bytestring = data['status']
 					image = bytestring.split('\'')[1]
-					resultImageBox.attr('src' , 'data:image/jpeg;base64,'+image) // display image from response
+					resultImageBox.attr('src' , 'data:image/jpeg;base64,'+image)
 
-					if(data['extra']) // display extra data if they appear in response
+					if(data['extra'])
 						document.getElementById('extraResult').innerHTML = data['extra'];
 				}
 			});
@@ -46,7 +39,7 @@ function onClickMethod(endpoint, variables){
 }
 
 
-// method to display image provided by user
+
 function readUrl(input){
 	imagebox = $('#imagebox')
 	if(input.files && input.files[0]){
