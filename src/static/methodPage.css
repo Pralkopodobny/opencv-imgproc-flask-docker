@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+    background-color: #222222 !important;
+    color: aliceblue !important;
+}
+
+.box {
+    text-align: center;
+}
+
+.image {
+    width: 300px;
+    height: 300px;
+    float: left;
+    border: 2px solid black;
+}
+
+.imageBoxesHolder {
+    display: inline-block;
+}
+
+.convertButtonHolder {
+    height: 300px;
+    padding: 130px 0;
+    float: left;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.floatClear {
+    clear: both;
+}
+
+.optionsHolder {
+    margin: 20px;
+}
+
+footer{
+    position: fixed;
+    padding: 10px 10px 0px 10px;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    background: #333333;
+    text-align: center;
+}
+
+footer a:link {
+    text-decoration: none;
+}
+
